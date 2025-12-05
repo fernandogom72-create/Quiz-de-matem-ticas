@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz de matemáticas</title>
+<style>
+body { margin:0; padding:0; background:#000; color:#eee; font-family:sans-serif; }
+#game-container { padding:16px; }
+#text { white-space: pre-wrap; margin-bottom:20px; font-size:1.1em; }
+.choice-btn { display:block; width:100%; text-align:left; margin:6px 0; padding:10px;
+  background:#222; color:#fff; border:none; border-radius:4px; font-size:1em; cursor:pointer; }
+.choice-btn:hover { background:#333; }
+#choices { margin-bottom:20px; }
+#restart-btn { display:block; width:100%; padding:10px; background:#444; color:#fff;
+border:none; border-radius:4px; font-size:1em; cursor:pointer; margin-top:20px; }
+#restart-btn:hover { background:#666; }
+h1 { margin-bottom:10px; text-align:center; }
+</style>
+</head>
+<body>
+<h1>Quiz de matemáticas</h1>
+<div id="game-container">
+<div id="text"></div>
+<div id="choices"></div>
+<button id="restart-btn">Reiniciar juego</button>
+</div>
+<script>
+const scenes = {
+  "inicio": {
+    "texto": "Bienvenido al quiz de matemáticas. ¿Listo para comenzar?\n",
+    "opciones": {
+      "Comenzar": "q1"
+    }
+  },
+  "q1": {
+    "texto": "¿Cuánto es 5 + 3?\n",
+    "opciones": {
+      "8": "q2",
+      "9": "q1_wrong"
+    }
+  },
+  "q1_wrong": {
+    "texto": "No es correcto, recuerda que 5 + 3 = 8.\n",
+    "opciones": {
+      "Siguiente": "q2"
+    }
+  },
+  "q2": {
+    "texto": "¿Cuánto es 7 x 2?\n",
+    "opciones": {
+      "12": "q2_wrong",
+      "14": "q3"
+    }
+  },
+  "q2_wrong": {
+    "texto": "Incorrecto, 7 x 2 = 14.\n",
+    "opciones": {
+      "Siguiente": "q3"
+    }
+  },
+  "q3": {
+    "texto": "¿Cuál es la raíz cuadrada de 81?\n",
+    "opciones": {
+      "8": "q3_wrong",
+      "9": "q4"
+    }
+  },
+  "q3_wrong": {
+    "texto": "No es correcto, la raíz cuadrada de 81 es 9.\n",
+    "opciones": {
+      "Siguiente": "q4"
+    }
+  },
+  "q4": {
+    "texto": "cuánto es la raíz de 45\n",
+    "opciones": {
+      "32": "q4_wrong",
+      "6.70": "fin"
+    }
+  },
+  "q4_wrong": {
+    "texto": "no es correcto, la raíz de 45 es 6.70\n",
+    "opciones": {
+      "Siguiente": "fin"
+    }
+  },
+  "fin": {
+    "texto": "¡Felicidades! Has completado el quiz de matemáticas.\n",
+    "opciones": {}
+  }
+};
+let currentScene = Object.keys(scenes)[0];
+const textDiv = document.getElementById('text');
+const choicesDiv = document.getElementById('choices');
+const restartBtn = document.getElementById('restart-btn');
+
+function renderScene(name) {
+  const scene = scenes[name];
+  textDiv.innerText = scene.texto.trim();
+  choicesDiv.innerHTML = '';
+  const opts = Object.entries(scene.opciones);
+  if (opts.length === 0) {
+    const endMsg = document.createElement('div');
+    endMsg.innerText = '— FIN —';
+    choicesDiv.appendChild(endMsg);
+  } else {
+    opts.forEach(([optText,dest])=>{
+      const btn = document.createElement('button');
+      btn.innerText = optText;
+      btn.className='choice-btn';
+      btn.onclick=()=>{ currentScene=dest; renderScene(currentScene); };
+      choicesDiv.appendChild(btn);
+    });
+  }
+}
+
+restartBtn.onclick=()=>{ currentScene=Object.keys(scenes)[0]; renderScene(currentScene); };
+window.onload=()=>{ renderScene(currentScene); };
+</script>
+</body>
+</html>
